@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research · Karl Weisenburger</title>
+<meta name="description" content="Tomographic wavefront sensing for wind tunnels: estimating 3D turbulence from laser distortion with model-based iterative reconstruction.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="index.html">Karl Weisenburger</a>
+  <span class="links">
+    <a href="index.html">Home</a>
+    <a class="here" href="research.html">Research</a>
+    <a href="demos.html">Demos</a>
+    <a href="publications.html">Publications</a>
+    <a href="cv.pdf">CV</a>
+  </span>
+</div></nav>
+
+<div class="pagehead">
+  <div class="wrap">
+    <p class="eyebrow">Research</p>
+    <h1>Seeing through turbulent air</h1>
+    <p class="lead">Reconstructing three-dimensional turbulence from the distortions it leaves on laser light.</p>
+  </div>
+</div>
+
+<section class="flush">
+  <div class="wrap reveal">
+    <h3>The goal</h3>
+    <p>Estimate the turbulent density of air throughout a three-dimensional volume, such as the flow inside a wind tunnel.</p>
+
+    <h3>The problem</h3>
+    <p>A laser passing through turbulent air picks up distortion along its entire line of sight, so a single measurement mixes together everything the beam passed through. Real data only makes this harder: measurements are noisy, sparse, restricted to a few angles, and confined to a narrow field of view.</p>
+
+    <h3>The approach</h3>
+    <p>Using several measurements from different angles, much like binocular vision recovers depth, I use tomography to reconstruct the volume by jointly fitting the measured distortions and a <strong>prior model</strong> (a generalized Gaussian Markov random field) that penalizes implausibly large variations. This is <strong>model-based iterative reconstruction</strong> (MBIR), an approach that solves a maximum a posteriori (MAP) problem. It works by balancing faithfulness to the raw data with overall plausibility, which is rigorously enforced by a mathematical prior. My published method, WindDensity-MBIR, recovers fine density structures even when piston, tip, and tilt are stripped from the measurements. My current work pushes into single time-shot, piston tip/tilt estimation, where conventional methods rely on time series data and strong assumptions.</p>
+
+    <ul class="facts">
+      <li><span class="k">Advisors</span><span><a href="https://www.math.purdue.edu/~buzzard/">Gregery Buzzard</a> (Mathematics) &amp; <a href="https://engineering.purdue.edu/~bouman/">Charles Bouman</a> (ECE), Purdue</span></li>
+      <li><span class="k">Mentor</span><span><a href="https://www.afit.edu/">Matthew Kemnetz</a>, Air Force Institute of Technology</span></li>
+      <li><span class="k">Interests</span><span>Computational imaging · Bayesian inverse problems · tomography · MBIR · aero-optics</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="sec-head"><span class="sec-num">↗</span><h2>See it in motion</h2></div>
+    <div class="teaser">
+      <div>
+        <p class="tt">The reconstruction pipeline, live</p>
+        <p class="ts">Adjust the number of measurements and the strength of the prior, and watch the reconstruction capture the turbulent region of interest, with reconstruction error tracking alongside. A live walk-through of the WindDensity-MBIR pipeline.</p>
+        <a class="launch" href="demos/winddensity/index.html">Open the demo &rarr;</a>
+      </div>
+      <img class="shot" src="demo-context.png" alt="Tomographic wavefront sensing setup"
+           onerror="this.style.display='none';">
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <span>&copy; <span id="yr">2026</span> Karl Weisenburger</span>
+  <span>Hosted on GitHub Pages</span>
+</div></footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  var els=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.1});els.forEach(function(el){io.observe(el);});}else{els.forEach(function(el){el.classList.add('in');});}
+</script>
+</body>
+</html>

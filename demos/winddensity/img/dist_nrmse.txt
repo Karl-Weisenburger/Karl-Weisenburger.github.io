@@ -1,0 +1,25 @@
+# NRMSE of recon distortion (dist_*) vs truth distortion (truth_dist)
+# dist band fraction (along depth) = 0.200
+# traditional   = RMSE / sqrt(mean(truth^2))
+# stable_range  = RMSE / (p95(truth) - p5(truth))
+ views        prior  traditional  stable_range
+     1         none       0.8940        0.2776
+     1   not_enough       0.8003        0.2485
+     1   just_right       0.7992        0.2481
+     1     too_much       0.8033        0.2494
+     3         none       0.7933        0.2463
+     3   not_enough       0.6252        0.1941
+     3   just_right       0.6144        0.1908
+     3     too_much       0.6820        0.2118
+     7         none       0.6725        0.2088
+     7   not_enough       0.6229        0.1934
+     7   just_right       0.6091        0.1891
+     7     too_much       0.6371        0.1978
+    11         none       0.6471        0.2009
+    11   not_enough       0.6480        0.2012
+    11   just_right       0.6369        0.1978
+    11     too_much       0.7256        0.2253
+    15         none       0.6265        0.1945
+    15   not_enough       0.6422        0.1994
+    15   just_right       0.6264        0.1945
+    15     too_much       0.7302        0.2267

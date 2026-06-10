@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karl Weisenburger</title>
+<meta name="description" content="Karl Weisenburger, Ph.D. candidate in mathematics at Purdue. Inverse problems and model-based reconstruction for aero-optics.">
+<meta property="og:title" content="Karl Weisenburger">
+<meta property="og:description" content="Ph.D. candidate in mathematics at Purdue. Inverse problems, computational imaging, tomographic wavefront sensing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="index.html">Karl Weisenburger</a>
+  <span class="links">
+    <a class="here" href="index.html">Home</a>
+    <a href="research.html">Research</a>
+    <a href="demos.html">Demos</a>
+    <a href="publications.html">Publications</a>
+    <a href="cv.pdf">CV</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="mark">
+          <canvas id="cvChip" width="48" height="48" aria-hidden="true"></canvas>
+          <p class="eyebrow">Ph.D. Candidate · Mathematics · Purdue University</p>
+        </div>
+        <h1>Karl Weisenburger</h1>
+        <p class="intro">I work on inverse problems in computational imaging, specifically developing methods to recover three-dimensional turbulence in wind tunnels based on how it distorts laser light. My research is carried out with the Air Force Research Laboratory and the Air Force Institute of Technology. <b>I plan to graduate in the Fall of 2027.</b></p>
+        <div class="contacts">
+          <a href="mailto:kweisen@purdue.edu">kweisen@purdue.edu</a>
+          <a href="cv.pdf">CV (PDF)</a>
+          <a href="https://github.com/Karl-Weisenburger">GitHub</a>
+          <a href="https://www.linkedin.com/in/karl-weisenburger-776937213">LinkedIn</a>
+        </div>
+      </div>
+      <div class="portrait">
+        <img src="photo.jpg" alt="Karl Weisenburger" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'KW'}));">
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap reveal">
+    <div class="sec-head"><span class="sec-num">01</span><h2>About</h2></div>
+    <p>I'm a Ph.D. candidate in mathematics at Purdue University, advised by Gregery Buzzard and Charles Bouman. This summer I'm an ORISE Doctoral Research Fellow at the Air Force Institute of Technology, continuing work I began as an AFRL Scholar. Before Purdue I studied applied mathematics at Hillsdale College, with a minor in Latin and a lasting interest in philosophy. I grew up in Pemberville, Ohio. Outside of research, I spend my time reading, biking, and with my family.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Start here</h2></div>
+    <div class="cards">
+      <a class="lcard" href="demos.html">
+        <span class="lk">Interactive</span>
+        <span class="lt">3D turbulence demo</span>
+        <span class="ls">A live walk-through of the reconstruction pipeline.</span>
+      </a>
+      <a class="lcard" href="publications.html">
+        <span class="lk">Latest paper</span>
+        <span class="lt">WindDensity-MBIR</span>
+        <span class="ls">Model-based reconstruction, in Optical Engineering.</span>
+      </a>
+      <a class="lcard" href="research.html">
+        <span class="lk">Research</span>
+        <span class="lt">What I work on</span>
+        <span class="ls">Inverse problems for aero-optics, explained.</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <span>&copy; <span id="yr">2026</span> Karl Weisenburger</span>
+  <span>Hosted on GitHub Pages</span>
+</div></footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  var els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }); }, {threshold:0.1});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(function(el){ el.classList.add('in'); }); }
+
+  function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+  function jet(t){t=t<0?0:t>1?1:t;var r=1.5-Math.abs(4*t-3),g=1.5-Math.abs(4*t-2),b=1.5-Math.abs(4*t-1);return[Math.round(255*(r<0?0:r>1?1:r)),Math.round(255*(g<0?0:g>1?1:g)),Math.round(255*(b<0?0:b>1?1:b))];}
+  function field(N,seed){var rng=mulberry32(seed),c=[];for(var k=0;k<5;k++)c.push({ax:rng()*1.1+0.35,ay:rng()*1.1+0.35,px:rng()*6.283,py:rng()*6.283,amp:rng()*0.8+0.4});var f=new Float32Array(N*N),i=0,mn=1e9,mx=-1e9;for(var y=0;y<N;y++)for(var x=0;x<N;x++){var u=x/N*6.283,v=y/N*6.283,s=0;for(var j=0;j<c.length;j++){var o=c[j];s+=o.amp*Math.sin(o.ax*u+o.px)*Math.cos(o.ay*v+o.py);}f[i]=s;if(s<mn)mn=s;if(s>mx)mx=s;i++;}for(i=0;i<f.length;i++)f[i]=(f[i]-mn)/(mx-mn);return f;}
+  (function(){var chip=document.getElementById('cvChip'); if(!chip) return; var N=48,R=N*0.46,cx=N/2-0.5,cy=N/2-0.5,cf=field(N,909),ctx=chip.getContext('2d'),im=ctx.createImageData(N,N),p=im.data;
+    for(var y=0;y<N;y++)for(var x=0;x<N;x++){var ii=y*N+x,oo=ii*4,d=Math.sqrt((x-cx)*(x-cx)+(y-cy)*(y-cy)); if(d<=R){var col=jet(cf[ii]);p[oo]=col[0];p[oo+1]=col[1];p[oo+2]=col[2];p[oo+3]=255;}else{p[oo+3]=0;}}
+    ctx.putImageData(im,0,0);})();
+</script>
+</body>
+</html>
