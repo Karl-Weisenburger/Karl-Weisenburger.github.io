@@ -35,12 +35,15 @@
 
   /* controls */
   .controls{position:sticky; top:0; z-index:20; background:rgba(252,252,250,.94); backdrop-filter:blur(6px); border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:18px;}
-  .controls .wrap{padding:16px 28px; display:grid; grid-template-columns:1fr 1fr; gap:26px;}
+  .controls .wrap{padding:16px 28px; display:grid; grid-template-columns:repeat(3, 1fr); gap:26px;}
   .ctrl .lbl{font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); display:flex; justify-content:space-between; margin-bottom:6px;}
   .ctrl .val{color:var(--accent-deep); font-weight:500;}
   .ctrl input[type=range]{width:100%; accent-color:var(--accent); margin:2px 0 4px;}
-  .ticks{display:flex; justify-content:space-between; font-family:var(--mono); font-size:.62rem; color:var(--muted);}
-  @media (max-width:560px){ .controls .wrap{grid-template-columns:1fr; gap:18px;} }
+  .ticks { position: relative; height: 1.2em; margin-top: 2px; font-family: var(--mono); font-size: .62rem; color: var(--muted); }
+  .ticks span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+  .ticks span:first-child { transform: translateX(0); }
+  .ticks span:last-child { transform: translateX(-100%); }
+  @media (max-width:768px){ .controls .wrap{grid-template-columns:1fr; gap:18px;} }
 
   section{padding:26px 0;}
   .kicker{font-family:var(--mono); font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 14px;}
@@ -113,7 +116,7 @@
 <div class="top">
   <div class="wrap">
     <h1>Estimating 3D turbulence from laser imaging</h1>
-    <p class="intro">A live walk-through of the WindDensity-MBIR pipeline. Use the two controls to change how many angles you measure from and how strongly the prior model smooths the result, and watch the reconstruction capture turbulence distortion over the central region of interest.</p>
+    <p class="intro">A live walk-through of the WindDensity-MBIR pipeline. Use the controls below to adjust the measurement geometry and reconstruction parameters, and watch the reconstruction capture turbulence distortion over the central region of interest.</p>
   </div>
 </div>
 
@@ -135,12 +138,32 @@
       <div class="ctrl">
         <div class="lbl"><span>Number of measurements</span><span class="val" id="nOut">7</span></div>
         <input type="range" id="nSlider" min="0" max="4" step="1" value="2" aria-label="Number of measurements">
-        <div class="ticks"><span>1</span><span>3</span><span>7</span><span>11</span><span>15</span></div>
+        <div class="ticks">
+  		<span style="left: 0%;">1</span>
+  		<span style="left: 25%;">3</span>
+  		<span style="left: 50%;">7</span>
+  		<span style="left: 75%;">11</span>
+  		<span style="left: 100%;">15</span>
+	</div>
+      </div>
+      <div class="ctrl">
+        <div class="lbl"><span>Angle between adjacent beams</span><span class="val" id="aOut">3&deg;</span></div>
+        <input type="range" id="aSlider" min="0" max="2" step="1" value="2" aria-label="Angle between adjacent beams">
+        <div class="ticks">
+  		<span style="left: 0%;">1&deg;</span>
+  		<span style="left: 50%;">2&deg;</span>
+  		<span style="left: 100%;">3&deg;</span>
+	</div>
       </div>
       <div class="ctrl">
         <div class="lbl"><span>Prior strength</span><span class="val" id="pOut">medium</span></div>
         <input type="range" id="pSlider" min="0" max="3" step="1" value="2" aria-label="Prior strength">
-        <div class="ticks"><span>no prior (FBP)</span><span>low</span><span>medium</span><span>high</span></div>
+        <div class="ticks">
+  		<span style="left: 0%;">none (FBP)</span>
+  		<span style="left: 33.33%;">low</span>
+  		<span style="left: 66.66%;">medium</span>
+ 		<span style="left: 100%;">high</span>
+	</div>
       </div>
     </div>
   </div>
@@ -151,14 +174,14 @@
       <div class="stage card">
         <p class="ct">1 · Measurement geometry</p>
         <p class="cs" id="geomCap">7 laser probes crossing the volume</p>
-        <div class="slot ar32" id="slot-geom"><img alt="Measurement geometry"><div class="ph"><span class="ph-t">Geometry</span><span class="fn">img/geom_N07.png</span></div></div>
+        <div class="slot ar32" id="slot-geom"><img alt="Measurement geometry"><div class="ph"><span class="ph-t">Geometry</span><span class="fn" id="fn-geom">img/geom_N07_a3.png</span></div></div>
       </div>
       <div class="arrow">&darr;</div>
 
       <div class="stage card">
         <p class="ct">2 · <span id="viewsTitle">7 distortion measurements</span></p>
         <p class="cs">One line-of-sight distortion measurement per probe</p>
-        <div class="slot ar21" id="slot-views"><img alt="Distortion measurements"><div class="ph"><span class="ph-t">Measurements</span><span class="fn">img/views_N07.png</span></div></div>
+        <div class="slot ar21" id="slot-views"><img alt="Distortion measurements"><div class="ph"><span class="ph-t">Measurements</span><span class="fn" id="fn-views">img/views_N07_a3.png</span></div></div>
       </div>
       <div class="arrow">&darr;</div>
 
@@ -177,7 +200,7 @@
             <div class="card">
               <p class="ct">4 · Full 3D reconstruction</p>
               <p class="cs">MBIR estimate of the entire volume</p>
-              <div class="slot ar32" id="slot-recon-full"><img alt="Full 3D reconstruction"><div class="ph"><span class="ph-t">3D reconstruction</span><span class="fn">img/recon_N07_p2.png</span></div></div>
+              <div class="slot ar32" id="slot-recon-full"><img alt="Full 3D reconstruction"><div class="ph"><span class="ph-t">3D reconstruction</span><span class="fn" id="fn-recon-full">img/recon_N07_a3_p2.png</span></div></div>
             </div>
           </div>
           <div class="lane-truth">
@@ -197,7 +220,7 @@
             <div class="card">
               <p class="ct">5 · Central region isolated</p>
               <p class="cs">Same reconstruction, central region highlighted</p>
-              <div class="slot ar32" id="slot-recon-roi"><img alt="Reconstruction with central region highlighted"><div class="ph"><span class="ph-t">Central region</span><span class="fn">img/recon_roi_N07_p2.png</span></div></div>
+              <div class="slot ar32" id="slot-recon-roi"><img alt="Reconstruction with central region highlighted"><div class="ph"><span class="ph-t">Central region</span><span class="fn" id="fn-recon-roi">img/recon_roi_N07_a3_p2.png</span></div></div>
             </div>
           </div>
           <div class="lane-truth">
@@ -221,7 +244,7 @@
           <div class="cmp-grid">
             <div>
               <p class="mini-h">Reconstruction</p>
-              <div class="slot ar11" id="slot-dist"><img alt="Reconstructed central distortion"><div class="ph"><span class="ph-t">Recon distortion</span><span class="fn">img/dist_N07_p2.png</span></div></div>
+              <div class="slot ar11" id="slot-dist"><img alt="Reconstructed central distortion"><div class="ph"><span class="ph-t">Recon distortion</span><span class="fn" id="fn-dist">img/dist_N07_a3_p2.png</span></div></div>
             </div>
             <div class="vs">compare<br>&harr;</div>
             <div>
@@ -245,51 +268,79 @@
 <script>
   const NS = [1,3,7,11,15];
   const PRI = ['no prior (FBP)','low','medium','high'];
-  // NRMSE of recon distortion vs. truth, keyed by N then prior index: [traditional, stable_range]
+  const ANG = [1, 2, 3];
+  
+  // NRMSE keyed by N, then angle index, then prior index: [traditional, stable_range]
   const NRMSE = {
-    1:  [[0.8940,0.2776],[0.8003,0.2485],[0.7992,0.2481],[0.8033,0.2494]],
-    3:  [[0.7933,0.2463],[0.6252,0.1941],[0.6144,0.1908],[0.6820,0.2118]],
-    7:  [[0.6725,0.2088],[0.6229,0.1934],[0.6091,0.1891],[0.6371,0.1978]],
-    11: [[0.6471,0.2009],[0.6480,0.2012],[0.6369,0.1978],[0.7256,0.2253]],
-    15: [[0.6265,0.1945],[0.6422,0.1994],[0.6264,0.1945],[0.7302,0.2267]]
+    1: [
+      [[0.8908,0.2766], [0.7950,0.2469], [0.7940,0.2465], [0.7977,0.2477]], // ai=0 (1 deg)
+      [[0.8908,0.2766], [0.7950,0.2469], [0.7940,0.2465], [0.7977,0.2477]], // ai=1 (2 deg)
+      [[0.8908,0.2766], [0.7950,0.2469], [0.7940,0.2465], [0.7977,0.2477]]  // ai=2 (3 deg)
+    ],
+    3: [
+      [[0.8258,0.2564], [0.6722,0.2087], [0.7021,0.2180], [0.7530,0.2338]], // ai=0 (1 deg)
+      [[0.7691,0.2388], [0.6007,0.1865], [0.6446,0.2002], [0.6973,0.2165]], // ai=1 (2 deg)
+      [[0.7890,0.2450], [0.6225,0.1933], [0.6230,0.1934], [0.6729,0.2089]]  // ai=2 (3 deg)
+    ],
+    7: [
+      [[0.7330,0.2276], [0.6100,0.1894], [0.5819,0.1807], [0.6568,0.2039]], // ai=0 (1 deg)
+      [[0.6592,0.2047], [0.5898,0.1831], [0.5830,0.1810], [0.6004,0.1864]], // ai=1 (2 deg)
+      [[0.6606,0.2051], [0.6223,0.1932], [0.5982,0.1857], [0.6105,0.1896]]  // ai=2 (3 deg)
+    ],
+    11: [
+      [[0.7051,0.2189], [0.6162,0.1913], [0.5783,0.1796], [0.6092,0.1892]], // ai=0 (1 deg)
+      [[0.6006,0.1865], [0.6151,0.1910], [0.5850,0.1816], [0.6059,0.1881]], // ai=1 (2 deg)
+      [[0.6307,0.1958], [0.6311,0.1960], [0.6070,0.1885], [0.7095,0.2203]]  // ai=2 (3 deg)
+    ],
+    15: [
+      [[0.6612,0.2053], [0.5967,0.1853], [0.5449,0.1692], [0.5789,0.1798]], // ai=0 (1 deg)
+      [[0.6241,0.1938], [0.6338,0.1968], [0.5879,0.1825], [0.6769,0.2102]], // ai=1 (2 deg)
+      [[0.6180,0.1919], [0.6345,0.1970], [0.5923,0.1839], [0.7026,0.2182]]  // ai=2 (3 deg)
+    ]
   };
-  let ni = 2, pi = 2;
+  
+  let ni = 2, pi = 2, ai = 2; // Default starting states (7 measurements, 3 deg, medium prior)
   const pad = n => String(n).padStart(2,'0');
 
-  function setSlot(id, file){
+  function setSlot(id, file, fnId){
     const slot = document.getElementById(id);
     const img = slot.querySelector('img');
     const ph  = slot.querySelector('.ph');
-    img.onerror = () => { img.style.display='none'; ph.style.display='flex'; const fn=ph.querySelector('.fn'); if(fn) fn.textContent=file; };
+    const fn  = fnId ? document.getElementById(fnId) : ph.querySelector('.fn');
+    img.onerror = () => { img.style.display='none'; ph.style.display='flex'; if(fn) fn.textContent=file; };
     img.onload  = () => { img.style.display='block'; ph.style.display='none'; };
     img.src = file;
   }
 
   function dynFiles(){
     const N = pad(NS[ni]);
+    const A = ANG[ai]; // Unpadded angle value based on your requested convention
     return {
-      geom:      `img/geom_N${N}.png`,
-      views:     `img/views_N${N}.png`,
-      reconFull: `img/recon_N${N}_p${pi}.png`,
-      reconRoi:  `img/recon_roi_N${N}_p${pi}.png`,
-      dist:      `img/dist_N${N}_p${pi}.png`
+      geom:      `img/geom_N${N}_a${A}.png`,
+      views:     `img/views_N${N}_a${A}.png`,
+      reconFull: `img/recon_N${N}_a${A}_p${pi}.png`,
+      reconRoi:  `img/recon_roi_N${N}_a${A}_p${pi}.png`,
+      dist:      `img/dist_N${N}_a${A}_p${pi}.png`
     };
   }
 
   function update(){
     const f = dynFiles();
-    setSlot('slot-geom',       f.geom);
-    setSlot('slot-views',      f.views);
-    setSlot('slot-recon-full', f.reconFull);
-    setSlot('slot-recon-roi',  f.reconRoi);
-    setSlot('slot-dist',       f.dist);
+    setSlot('slot-geom',       f.geom,      'fn-geom');
+    setSlot('slot-views',      f.views,     'fn-views');
+    setSlot('slot-recon-full', f.reconFull, 'fn-recon-full');
+    setSlot('slot-recon-roi',  f.reconRoi,  'fn-recon-roi');
+    setSlot('slot-dist',       f.dist,      'fn-dist');
     const n = NS[ni];
     document.getElementById('nOut').textContent = n;
     document.getElementById('pOut').textContent = PRI[pi];
+    document.getElementById('aOut').innerHTML = ANG[ai] + '&deg;';
     document.getElementById('mbirP').textContent = PRI[pi];
     document.getElementById('geomCap').textContent = n + ' laser ' + (n===1 ? 'probe' : 'probes') + ' crossing the volume';
     document.getElementById('viewsTitle').textContent = (n===1 ? 'A single distortion measurement' : n + ' distortion measurements');
-    const nm = (NRMSE[n] || [])[pi] || [null,null];
+    
+    // Safely retrieve NRMSE data for current N, angle index, and prior index
+    const nm = ((NRMSE[n] || [])[ai] || [])[pi] || [null,null];
     document.getElementById('nrmseStable').textContent = nm[1]!=null ? (nm[1]*100).toFixed(1)+'%' : '';
   }
 
@@ -303,15 +354,18 @@
   function preload(){
     NS.forEach(n => {
       const N = pad(n);
-      [`img/geom_N${N}.png`, `img/views_N${N}.png`].forEach(s => { const im=new Image(); im.src=s; });
-      PRI.forEach((_, p) => {
-        [`img/recon_N${N}_p${p}.png`, `img/recon_roi_N${N}_p${p}.png`, `img/dist_N${N}_p${p}.png`].forEach(s => { const im=new Image(); im.src=s; });
+      ANG.forEach(A => {
+        [`img/geom_N${N}_a${A}.png`, `img/views_N${N}_a${A}.png`].forEach(s => { const im=new Image(); im.src=s; });
+        PRI.forEach((_, p) => {
+          [`img/recon_N${N}_a${A}_p${p}.png`, `img/recon_roi_N${N}_a${A}_p${p}.png`, `img/dist_N${N}_a${A}_p${p}.png`].forEach(s => { const im=new Image(); im.src=s; });
+        });
       });
     });
   }
 
   document.getElementById('nSlider').addEventListener('input', e => { ni = +e.target.value; update(); });
   document.getElementById('pSlider').addEventListener('input', e => { pi = +e.target.value; update(); });
+  document.getElementById('aSlider').addEventListener('input', e => { ai = +e.target.value; update(); });
 
   update();
   preload();
